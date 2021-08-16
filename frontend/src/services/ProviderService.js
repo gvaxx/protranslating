@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const backendUrl = process.env.BACKEND_URL;
+const backendUrl = process.env.VUE_APP_BACKEND_URL;
 export default {
   getAllProviders() {
     return axios.get(`${backendUrl}/providers`);
