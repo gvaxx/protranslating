@@ -6,7 +6,13 @@
         <HeaderText :text="title" />
       </div>
       <div class="form-body">
-        <Input v-model="form.name" label="Name:" input-id="name" />
+        <Input
+          v-model="form.name"
+          label="Name:"
+          input-id="name"
+          @change="nameValidation"
+          :invalid-text="errors.name"
+        />
         <Input
           v-model="form.email"
           label="Email:"
@@ -137,6 +143,7 @@ export default {
         email: "",
       },
       errors: {
+        name: "",
         email: "",
         phone: "",
         provider: "",
@@ -150,7 +157,7 @@ export default {
   computed: {
     ...mapState(["providers", "isLoading", "requestErrors"]),
     isValidClient() {
-      return !this.errors.email && !this.errors.phone;
+      return !this.errors.email && !this.errors.phone && !this.errors.name;
     },
 
     isValidProvider() {
@@ -217,7 +224,7 @@ export default {
         });
       }
 
-      this.providerValidation(this.newProviderName, provider);
+      this.providerValidation(this.newProviderName, "provider");
       if (this.errors.provider) {
         return;
       }
@@ -234,6 +241,7 @@ export default {
     saveClientClick() {
       this.phoneValidation();
       this.emailValidation();
+      this.nameValidation();
       if (!this.isValidClient) {
         return;
       }
@@ -252,7 +260,6 @@ export default {
     deleteClientClick() {
       this.deleteClient(this.form.id).then((res) => {
         if (res === true) this.hidePopup();
-        console.log(res);
       });
     },
 
@@ -266,6 +273,13 @@ export default {
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
       if (!reg.test(this.form.email.toLowerCase())) {
         return (this.errors.email = "Email is invalid");
+      }
+    },
+
+    nameValidation() {
+      if (this.errors.name) this.errors.name = "";
+      if (this.form.name === "") {
+        return (this.errors.name = "Name is required");
       }
     },
 

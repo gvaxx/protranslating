@@ -11,6 +11,7 @@ export const store = new Vuex.Store({
     providers: [],
     isLoading: false,
     requestErrors: {
+      name: "",
       email: "",
       phone: "",
       provider: "",
@@ -25,6 +26,19 @@ export const store = new Vuex.Store({
     providers: (state) => {
       return state.providers;
     },
+    getProvidersName: (state) => (clientProviders) => {
+      if (clientProviders) {
+        let clientProviderIds = clientProviders.map((provider) => provider.id);
+        let providerNames = [];
+        state.providers.forEach(
+          (provider) =>
+            clientProviderIds.includes(provider.id) &&
+            providerNames.push(provider.name)
+        );
+        return providerNames.join(", ");
+      }
+      return "";
+    },
   },
   mutations: {
     setClients(state, clients) {
@@ -37,9 +51,10 @@ export const store = new Vuex.Store({
 
     createOrUpdateClient(state, { client, isNewCreate }) {
       if (!isNewCreate) {
-        state.clients = state.clients.map(
-          (el) => el.id === client.id || client
-        );
+        let index = state.clients.findIndex((it) => it.id === client.id);
+        if (index >= 0) {
+          state.clients[index] = client;
+        }
         return;
       }
       state.clients.push(client);
@@ -57,9 +72,17 @@ export const store = new Vuex.Store({
 
     createOrUpdateProvider(state, { provider, isNewCreate }) {
       if (!isNewCreate) {
-        state.providers = state.providers.map(
-          (it) => it.id === provider.id || provider
-        );
+        let index = state.providers.findIndex((it) => {
+          console.log(it.id);
+          console.log(provider.id);
+          return it.id === provider.id;
+        });
+        console.log(index);
+        console.log(state.providers[index]);
+        if (index >= 0) {
+          state.providers[index] = provider;
+        }
+        console.log(state.providers);
         return;
       }
       state.providers.push(provider);
@@ -67,22 +90,23 @@ export const store = new Vuex.Store({
     changeLoading(state) {
       state.isLoading = !state.isLoading;
     },
-    changeRequestErrors(state, errors) {
-      for (const error in errors) {
-        errors[error] = "";
+    changeRequestErrors(state, { errors, type }) {
+      for (const error in this.requestErrors) {
+        this.requestErrors[error] = "";
       }
       errors.forEach((error) => {
         if (error.param === "email") {
           state.requestErrors.email = error.msg;
         }
-        if (error.param.indexOf("providers[") > 0) {
+        if (error.param.indexOf("providers[") >= 0) {
           state.requestErrors.providers = error.msg;
         }
         if (error.param === "phone") {
           state.requestErrors.phone = error.msg;
         }
         if (error.param === "name") {
-          state.requestErrors.name = error.msg;
+          if (type === "client") state.requestErrors.name = error.msg;
+          if (type === "provider") state.requestErrors.provider = error.msg;
         }
       });
     },
@@ -97,7 +121,6 @@ export const store = new Vuex.Store({
             return true;
           })
           .catch((rej) => {
-            alert("Error while getting clients!");
             console.log(rej);
             return false;
           })
@@ -115,7 +138,10 @@ export const store = new Vuex.Store({
             return true;
           })
           .catch((rej) => {
-            this.commit("changeRequestErrors", rej.response.data.errors || []);
+            this.commit("changeRequestErrors", {
+              errors: rej.response.data.errors || [],
+              type: "client",
+            });
             return false;
           })
       );
@@ -131,7 +157,10 @@ export const store = new Vuex.Store({
             return true;
           })
           .catch((rej) => {
-            this.commit("changeRequestErrors", rej.response.data.errors || []);
+            this.commit("changeRequestErrors", {
+              errors: rej.response.data.errors || [],
+              type: "client",
+            });
             return false;
           })
       );
@@ -145,7 +174,10 @@ export const store = new Vuex.Store({
             return true;
           })
           .catch((rej) => {
-            this.commit("changeRequestErrors", rej.response.data.errors || []);
+            this.commit("changeRequestErrors", {
+              errors: rej.response.data.errors || [],
+              type: "provider",
+            });
             return false;
           })
       );
@@ -162,8 +194,10 @@ export const store = new Vuex.Store({
             return true;
           })
           .catch((rej) => {
-            alert("Error while saving provider!");
-            this.commit("changeRequestErrors", rej.response.data.errors || []);
+            this.commit("changeRequestErrors", {
+              errors: rej.response.data.errors || [],
+              type: "provider",
+            });
             return false;
           })
       );
@@ -179,7 +213,10 @@ export const store = new Vuex.Store({
             return true;
           })
           .catch((rej) => {
-            this.commit("changeRequestErrors", rej.response.data.errors || []);
+            this.commit("changeRequestErrors", {
+              errors: rej.response.data.errors || [],
+              type: "provider",
+            });
             return false;
           })
       );
