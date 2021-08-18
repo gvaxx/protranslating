@@ -64,7 +64,6 @@ exports.deleteProviderById = async (req, res) => {
     const hasProviderClient = await Client.findOne({
       "providers.id": req.params.id,
     });
-    console.log(hasProviderClient);
     if (hasProviderClient) {
       return res.status(403).json({
         error: "Provider attached to client",

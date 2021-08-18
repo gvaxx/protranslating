@@ -308,7 +308,6 @@ export default {
     },
 
     deleteProviderValidation(providerId) {
-      console.log(this.hasClientWithProvider(providerId));
       if (this.hasClientWithProvider(providerId)) {
         this.errors.providers =
           "Provider attached to some clients, you can not delete it";
