@@ -1,10 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const clientValidator = require('../validators/client')
-const ObjectIdInParamValidator = require('../validators/common')
-const providerValidator = require('../validators/provider')
-const clientController = require('../controller/client')
-const providerController = require('../controller/provider')
+const clientValidator = require("../validators/client");
+const ObjectIdInParamValidator = require("../validators/common");
+const providerValidator = require("../validators/provider");
+const clientController = require("../controller/client");
+const providerController = require("../controller/provider");
 /**
  * Provider_Id
  * @typedef {object} Provider_Id
@@ -26,7 +26,7 @@ const providerController = require('../controller/provider')
  * @return {array<Client>} 200 - Return list of clients and providers
  * @return {object} 500 - Unhandled error
  */
-router.get('/clients', clientController.getAllClients)
+router.get("/clients", clientController.getAllClients);
 
 /**
  * Client_Assignment
@@ -48,7 +48,11 @@ router.get('/clients', clientController.getAllClients)
  * @return {object} 404 - Client with Id not found
  * @return {object} 500 - Unhandled error
  */
-router.get('/clients/:id', ObjectIdInParamValidator, clientController.getClientById)
+router.get(
+  "/clients/:id",
+  ObjectIdInParamValidator,
+  clientController.getClientById
+);
 
 /**
  * POST /clients
@@ -58,7 +62,7 @@ router.get('/clients/:id', ObjectIdInParamValidator, clientController.getClientB
  * @return {object} 400 - The request entity is not correct
  * @return {object} 500 - Unhandled error
  */
-router.post('/clients', clientValidator, clientController.createClient)
+router.post("/clients", clientValidator, clientController.createClient);
 
 /**
  * PUT /clients/{id}
@@ -70,7 +74,11 @@ router.post('/clients', clientValidator, clientController.createClient)
  * @return {object} 404 - Client with Id not found
  * @return {object} 500 - Unhandled error
  */
-router.put('/clients/:id', clientValidator.concat(ObjectIdInParamValidator), clientController.updateClientById)
+router.put(
+  "/clients/:id",
+  clientValidator.concat(ObjectIdInParamValidator),
+  clientController.updateClientById
+);
 
 /**
  * DELETE /clients/{id}
@@ -81,8 +89,11 @@ router.put('/clients/:id', clientValidator.concat(ObjectIdInParamValidator), cli
  * @return {object} 404 - Client with Id not found
  * @return {object} 500 - Unhandled error
  */
-router.delete('/clients/:id', ObjectIdInParamValidator, clientController.deleteClientById)
-
+router.delete(
+  "/clients/:id",
+  ObjectIdInParamValidator,
+  clientController.deleteClientById
+);
 
 /**
  * Provider
@@ -105,9 +116,7 @@ router.delete('/clients/:id', ObjectIdInParamValidator, clientController.deleteC
  * @return {object} 400 - The request entity is not correct
  * @return {object} 500 - Unhandled error
  */
-router.post('/providers', providerValidator, providerController.createProvider)
-
-
+router.post("/providers", providerValidator, providerController.createProvider);
 
 /**
  * GET /providers
@@ -116,7 +125,7 @@ router.post('/providers', providerValidator, providerController.createProvider)
  * @return {object} 400 - The request entity is not correct
  * @return {object} 500 - Unhandled error
  */
-router.get('/providers', providerController.getAllProviders)
+router.get("/providers", providerController.getAllProviders);
 
 /**
  * PUT /providers/{id}
@@ -128,7 +137,11 @@ router.get('/providers', providerController.getAllProviders)
  * @return {object} 404 - Provider with Id not found
  * @return {object} 500 - Unhandled error
  */
-router.put('/providers/:id', providerValidator.concat(ObjectIdInParamValidator), providerController.updateProviderById)
+router.put(
+  "/providers/:id",
+  providerValidator.concat(ObjectIdInParamValidator),
+  providerController.updateProviderById
+);
 
 /**
  * DELETE /providers/{id}
@@ -139,6 +152,10 @@ router.put('/providers/:id', providerValidator.concat(ObjectIdInParamValidator),
  * @return {object} 404 - Provider with Id not found
  * @return {object} 500 - Unhandled error
  */
-router.delete('/providers/:id', ObjectIdInParamValidator, providerController.deleteProviderById)
+router.delete(
+  "/providers/:id",
+  ObjectIdInParamValidator,
+  providerController.deleteProviderById
+);
 
 module.exports = router;
