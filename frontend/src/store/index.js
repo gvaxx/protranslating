@@ -39,6 +39,13 @@ export const store = new Vuex.Store({
       }
       return "";
     },
+
+    hasClientWithProvider: (state) => (providerId) => {
+      return !!state.clients.find(
+        (client) =>
+          !!client.providers.find((provider) => provider.id === providerId)
+      );
+    },
   },
   mutations: {
     setClients(state, clients) {
@@ -73,16 +80,11 @@ export const store = new Vuex.Store({
     createOrUpdateProvider(state, { provider, isNewCreate }) {
       if (!isNewCreate) {
         let index = state.providers.findIndex((it) => {
-          console.log(it.id);
-          console.log(provider.id);
           return it.id === provider.id;
         });
-        console.log(index);
-        console.log(state.providers[index]);
         if (index >= 0) {
           state.providers[index] = provider;
         }
-        console.log(state.providers);
         return;
       }
       state.providers.push(provider);
@@ -219,13 +221,6 @@ export const store = new Vuex.Store({
             });
             return false;
           })
-      );
-    },
-
-    hasClientWithProvider(state, providerId) {
-      return !!state.getters.clients.find(
-        (client) =>
-          !!client.providers.find((provider) => provider.id === providerId)
       );
     },
   },

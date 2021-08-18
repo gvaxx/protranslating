@@ -32,7 +32,7 @@
 import Form from "@/components/Form";
 import Button from "@/components/Button";
 import HeaderText from "@/components/HeaderText";
-import { mapActions, mapState, mapGetters } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   name: "Root",
   components: {
@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     ...mapState(["clients", "providers"]),
-    ...mapGetters(["getProvidersName"]),
+    // ...mapGetters(["getProvidersName"]),
   },
 
   created() {

@@ -124,7 +124,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import HeaderText from "@/components/HeaderText";
 import Loading from "@/components/Loading";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   name: "Form",
@@ -156,6 +156,7 @@ export default {
   },
   computed: {
     ...mapState(["providers", "isLoading", "requestErrors"]),
+    ...mapGetters(["hasClientWithProvider"]),
     isValidClient() {
       return !this.errors.email && !this.errors.phone && !this.errors.name;
     },
@@ -186,7 +187,6 @@ export default {
       "deleteClient",
       "saveProvider",
       "deleteProvider",
-      "hasClientWithProvider",
     ]),
 
     deleteProviderClick(providerId) {
@@ -306,7 +306,9 @@ export default {
         this.errors[errorName] = "Provider name must be unique";
       }
     },
+
     deleteProviderValidation(providerId) {
+      console.log(this.hasClientWithProvider(providerId));
       if (this.hasClientWithProvider(providerId)) {
         this.errors.providers =
           "Provider attached to some clients, you can not delete it";
